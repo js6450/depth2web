@@ -4,6 +4,7 @@ Depth2Web is an open source tool kit that connects multiple depth camera for the
 
 ## Devices supported
 
+* Microsoft Kinect Azure
 * Microsoft Kinect V2
 * Intel RealSense 2
 
@@ -67,6 +68,10 @@ Contains node-librealsense npm module. When object is created, pipeline is start
 #### Kinect.js
 
 Contains KinectV2 npm module. Creates kinect connection and starts specified camera feed upon user request.
+
+#### Azure.js
+
+Contains Kinect Azure npm module. Creates kinect connection and starts specified camera feed upon user request.
 
 ### socketServer.js
 
