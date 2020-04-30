@@ -6,19 +6,24 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
+    "install": "electron-rebuild",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
   "author": "Jiwon Shin",
   "license": "MIT",
   "dependencies": {
+    "ajv": "^6.12.2",
     "asar": "^0.14.6",
     "body-parser": "^1.18.3",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "http": "0.0.0",
-    "node-librealsense": "file:node_modules/node-librealsense",
-    "sharp": "^0.21.3",
+    "node-gyp": "^6.1.0",
+    "node-librealsense": "^0.2130.0",
+    "nvm": "0.0.4",
+    "peer": "^0.5.2",
+    "sharp": "^0.25.2",
     "socket.io": "^2.2.0"
   },
   "build": {

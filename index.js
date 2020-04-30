@@ -9,7 +9,7 @@ To run: npm start
 const electron = require('electron');
 const {app, BrowserWindow, ipcMain} = electron;
 
-const socketServer = require("./socketServer/SocketServer");
+const server = require("./Server/Server");
 const device = require("./Device/Device");
 
 let devices = [];
@@ -25,6 +25,7 @@ function createWindow(){
     mainWindow.loadURL("file://" + __dirname + "/renderer/index.html");
 
     mainWindow.focus();
+    //dev tools
     mainWindow.webContents.openDevTools();
 
     ipcMain.on('startDevice', (evt, type, id) =>{
@@ -43,12 +44,7 @@ function createWindow(){
         devices.forEach(d => {
             d.onImage = (img, frameType) => {
                 let id = d.id;
-                //console.log('sending image of length', img.length);
                 evt.sender.send('image', {device: type, id, img, frameType});
-
-                if(currentServer){
-                    currentServer.sendImage({device: type, id, img, frameType});
-                }
             };
 
         });
@@ -60,18 +56,14 @@ function createWindow(){
     });
 
     ipcMain.on('startServer', (evt, port) => {
-
         let portNum = port;
-        if (port == "") {
-            portNum = 8080;
-        }
 
-       console.log('opening port', portNum);
+        console.log('opening port', portNum);
 
-       currentServer = new socketServer.SocketServer(portNum, () =>{
-           console.log('socket started on', portNum);
-           evt.sender.send('startedServer', portNum);
-       })
+        currentServer = new server.Server(portNum, () =>{
+            console.log('server started on', portNum);
+            evt.sender.send('startedServer', portNum);
+        })
     });
 
     ipcMain.on('startDepth', (evt, type, id) =>{

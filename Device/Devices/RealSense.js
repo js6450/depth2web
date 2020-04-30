@@ -7,7 +7,18 @@ class RealSense extends Device {
 
         //catch if device not connected
 
-        //this.cameraInfo = new rs2.camera_info;
+        // this.cameraInfo = new rs2.camera_info;
+        // this.ctx = new rs2.Context();
+        // this.config = new rs2.Config();
+
+
+        //
+        // if(this.ctx.queryDevices().size > 0){
+        //     console.log("Get first device");
+        //     this.device = this.ctx.queryDevices().front;
+        // }
+        //
+        // this.config.enableDevice(this.ctx.queryDevices().front.getCameraInfo().serialNumber);
 
         this.pipeline = new rs2.Pipeline();
         this.colorizer = new rs2.Colorizer();
@@ -16,7 +27,6 @@ class RealSense extends Device {
         this.colorFeed = false;
 
         console.log("realSense device initialized");
-
 
         // this.config = new rs2.Config();
         // this.config.enableStream(0, -1, 0, 0, rs2.format.format_raw8, 0);
@@ -27,15 +37,27 @@ class RealSense extends Device {
         console.log("start realsense pipeline");
         this.pipeline.start();
 
+        // this.frameset = new rs2.FrameSet();
+        //
+        //
+        //
+        // this.poller = setInterval(() => {
+        //     if(this.pipeline.pollForFrames(this.frameset)){
+        //         this.getLastFrame();
+        //     }
+        //
+        // }, 100);
+
         this.poller = setInterval(() => {
             this.getLastFrame();
-        }, 4 * 1000 / this.expectedFps);
+        }, 100);
+
+        //4 * 1000 / this.expectedFps
     }
 
     getLastFrame() {
         const resultSet = this.pipeline.pollForFrames();
         if (resultSet) {
-
            if(this.depthFeed && resultSet.depthFrame){
                let depthFrame = this.colorizer.colorize(resultSet.depthFrame);
                this.onDepthFrame({data: depthFrame.data, width: depthFrame.width, height: depthFrame.height});

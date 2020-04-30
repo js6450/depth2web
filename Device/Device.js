@@ -39,7 +39,8 @@ module.exports = class Device {
     }
 
     onDepthFrame({data, width, height}){
-        // console.log('render');
+
+       // console.log('render');
         sharp(Buffer.from(data), {raw: {width, height, channels: 3}})
             .resize(320, 240)
             //.resize(640, 480)

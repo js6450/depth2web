@@ -16,7 +16,9 @@ h1{
 }
 
 h2{
-    font-size: 24px;
+    font-size: 18px;
+    line-height: 18px;
+    margin: 9px 0px;
 }
 
 h3{
@@ -24,18 +26,26 @@ h3{
     margin: 0;
 }
 
+.mdl-button{
+    padding: 0px 8px;
+    margin-right: 8px;
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
 #control{
-    width: 35%;
+    width: 360px;
     height: 100%;
-    background-color: rgba(129, 199, 212, 0.5);
-    float: right;
-    padding: 2.5%;
+    background-color: rgba(200, 200, 200, 0.5);
+    float: left;
+    padding: 18px;
+    position: fixed;
 }
 
 #view{
-    width: 50%;
+    width: calc(100% - 396px);
     height: 100%;
-    float: left;
+    float: right;
 }
 
 #framePreview{
@@ -43,7 +53,7 @@ h3{
 }
 
 .devicePanel{
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(200, 200, 200, 0.7);
     padding: 12px;
     margin-top: 32px;
     border-radius: 12px;
@@ -51,4 +61,31 @@ h3{
 
 #broadcast-addr{
     font-weight: bold;
+}
+
+.mdl-textfield.mdl-js-textfield.mdl-textfield--floating-label.is-upgraded {
+    width: 62%;
+}
+
+.mdl-textfield__label{
+    font-size: 14px;
+}
+
+button#startServer{
+    margin-left: 12px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+}
+
+.viewer{
+    width: 95%;
+    display: block;
+    margin: auto;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.viewer-img{
+    width: 50%;
+    height: auto;
 }
