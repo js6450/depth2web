@@ -1,8 +1,9 @@
 const sharp = require('sharp');
 
 module.exports = class Device {
-    constructor(id){
+    constructor(id, type){
         this.id = id;
+        this.type = type;
         this.init();
         this.onImage = () => {};
         this.onError = () => {};
@@ -24,8 +25,8 @@ module.exports = class Device {
         console.log('stopping device');
     }
 
-    onColorFrame({data, width, height}){
-        sharp(Buffer.from(data), {raw: {width, height, channels: 3}})
+    onColorFrame({data, width, height, channel}){
+        sharp(Buffer.from(data), {raw: {width, height, channels: channel}})
             .resize(320, 240)
             //.resize(640, 480)
             .flop()
@@ -38,10 +39,10 @@ module.exports = class Device {
         });
     }
 
-    onDepthFrame({data, width, height}){
+    onDepthFrame({data, width, height, channel}){
 
        // console.log('render');
-        sharp(Buffer.from(data), {raw: {width, height, channels: 3}})
+        sharp(Buffer.from(data), {raw: {width, height, channels: channel}})
             .resize(320, 240)
             //.resize(640, 480)
             .flop()

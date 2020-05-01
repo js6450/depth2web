@@ -21,7 +21,10 @@ function createWindow(){
 
     const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize;
 
-    mainWindow = new BrowserWindow({width, height});
+    mainWindow = new BrowserWindow({width, height, webPreferences:{
+        nodeIntegration: true
+        }
+    });
     mainWindow.loadURL("file://" + __dirname + "/renderer/index.html");
 
     mainWindow.focus();
@@ -31,7 +34,7 @@ function createWindow(){
     ipcMain.on('startDevice', (evt, type, id) =>{
         console.log('type', type, 'device id', id);
 
-        let newDevice = new (require('./Device/Devices/' + type))(id);
+        let newDevice = new (require('./Device/Devices/' + type))(id, type);
         newDevice.start();
 
         newDevice.onError = err => {
@@ -44,8 +47,10 @@ function createWindow(){
         devices.forEach(d => {
             d.onImage = (img, frameType) => {
                 let id = d.id;
-                evt.sender.send('image', {device: type, id, img, frameType});
+                // console.log("sending image from " + d.type);
+                evt.sender.send('image', {device: d.type, id, img, frameType});
             };
+
 
         });
 

@@ -65,7 +65,7 @@ Parent class of all device modules. Contains onColorFrame and onGrayFrame, which
 
 Contains node-librealsense npm module. When object is created, pipeline is started and polls for frames at the maximum framerate possible.
 
-#### Kinect.js
+#### Kinect2.js
 
 Contains KinectV2 npm module. Creates kinect connection and starts specified camera feed upon user request.
 

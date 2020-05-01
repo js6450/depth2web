@@ -7,6 +7,8 @@ class Depth2Web{
         this.imgWidth = 320;
         this.imgHeight = 240;
 
+        this.devices = [];
+
         this.depthBlob = [];
         this.colorBlob = [];
 

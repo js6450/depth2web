@@ -16,6 +16,8 @@ let new_peer_info;
 let ip_addr;
 let portNumber;
 
+let devices_to_send = [];
+
 window.addEventListener('load', init);
 
 function init(){
@@ -23,7 +25,7 @@ function init(){
     //debug view
 
     document.getElementById('realSense').addEventListener('click', () => startDevice('realSense'));
-    document.getElementById('kinect').addEventListener('click', () => startDevice('kinect'));
+    document.getElementById('kinect').addEventListener('click', () => startDevice('kinect2'));
     document.getElementById('azure').addEventListener('click', () => startDevice('azure'));
 
     document.getElementById('startServer').addEventListener('click', startServer);
@@ -32,19 +34,15 @@ function init(){
 }
 
 function startDevice(type){
-
     if(type === 'kinect' || type === 'azure'){
         if(process.platform === 'darwin'){
             alert("Devices not supported on Mac OS. Please use on Windows");
         }else{
             ipcRenderer.send('startDevice', type, deviceCount);
-            deviceCount++;
         }
     }else{
         ipcRenderer.send('startDevice', type, deviceCount);
-        deviceCount++;
     }
-
 }
 
 function startServer(){
@@ -119,10 +117,9 @@ function initPeer(){
     });
 }
 
-function sendData(evt, id, data){
-    let dataToSend = {event: evt, id: id, data: data};
+function sendData(evt, id, device, data){
+    let dataToSend = {event: evt, id: id, device: device, data: data};
     // console.log(dataToSend);
-
     peer_connections.forEach(function(conn){
         conn.send(dataToSend);
     });
@@ -130,34 +127,36 @@ function sendData(evt, id, data){
 
 //sent from index.js line 43
 ipcRenderer.on('image', (evt, {device, id, img, frameType}) => {
-    // console.log('image received of type: ' + frameType);
+    console.log('image received of type: ' + frameType + "from device " + device);
+
+    let element_id = "rs";
+
+    if(device === "azure"){
+        element_id = "azure";
+    }else if(device === "kinect2"){
+        element_id = "k";
+    }
 
     const blob = new Blob([img], {type: 'image/webp'});
     let url = URL.createObjectURL(blob);
 
-    let depthView = document.getElementById('rs-' + id + '-view-depth');
-    let colorView = document.getElementById('rs-' + id + '-view-color');
+    let depthView = document.getElementById(element_id + '-' + id + '-view-depth');
+    let colorView = document.getElementById(element_id + '-' + id + '-view-color');
 
-    if(device == 'realSense'){
-        if(frameType == "depth"){
-            if(depthView != null){
-                depthView.src = url;
-            }
-        }
-
-        if(frameType == "color"){
-            if(colorView != null){
-                colorView.src = url;
-            }
+    if(frameType == "depth"){
+        if(depthView != null){
+            depthView.src = url;
         }
     }
 
-    if(device == 'kinect'){
-        document.getElementById('kinect-view').src = url;
+    if(frameType == "color"){
+        if(colorView != null){
+            colorView.src = url;
+        }
     }
 
     if(peer_connections.length > 0){
-        sendData(frameType, id, img);
+        sendData(frameType, id, device, img);
     }
 });
 
@@ -175,21 +174,23 @@ ipcRenderer.on('startedServer', (evt, port) => {
 });
 
 ipcRenderer.on('startedDevice', (evt, type, id) => {
+    deviceCount++;
     if(deviceCount <= 1){
         console.log('show device panel');
     }
 
     if(type == 'realSense'){
         addRealSensePanel(id);
-    }else{
-        console.log('show kinect panel');
+    }else if(type == 'kinect2'){
+        addKinectPanel(id);
+    }else if(type == 'azure'){
+        addAzurePanel(id);
     }
 
     //document.getElementById('devices-info').innerHTML = deviceCount + " devices currently connected";
 });
 
 function addRealSensePanel(id){
-
     let panelDiv = document.createElement('div');
     panelDiv.id = 'rs-' + id;
     panelDiv.setAttribute('class', 'devicePanel');
@@ -243,6 +244,122 @@ function addRealSensePanel(id){
 
     let depthDiv = document.createElement('img');
     depthDiv.id = "rs-" + id + "-view-depth";
+    depthDiv.setAttribute("class", "viewer-img");
+    viewDiv.append(depthDiv);
+}
+
+function addKinectPanel(id){
+    let panelDiv = document.createElement('div');
+    panelDiv.id = 'k-' + id;
+    panelDiv.setAttribute('class', 'devicePanel');
+    document.getElementById('connected').append(panelDiv);
+
+    let deviceTitle = document.createElement('h3');
+    deviceTitle.id = 'k-' + id + '-title';
+    deviceTitle.innerHTML = "Kinect2 " + id;
+    panelDiv.append(deviceTitle);
+
+    let depthButton = document.createElement("button");
+    depthButton.setAttribute("class", "mdl-button mdl-js-button mdl-button--raised");
+    depthButton.innerHTML = 'start depth camera';
+    depthButton.id = 'k-' + id + '-depth';
+    panelDiv.append(depthButton);
+
+    depthButton.addEventListener('click', () => ipcRenderer.send('startDepth', 'kinect2', id));
+
+    let colorButton = document.createElement("button");
+    colorButton.setAttribute("class", "mdl-button mdl-js-button mdl-button--raised");
+    colorButton.innerHTML = 'start color camera';
+    colorButton.id = 'k-' + id + '-color';
+    panelDiv.append(colorButton);
+
+    colorButton.addEventListener('click', () => ipcRenderer.send('startColor', 'kinect2', id));
+
+    let closeButton = document.createElement("button");
+    closeButton.setAttribute("class", "mdl-button mdl-js-button mdl-button--raised");
+    closeButton.innerHTML = 'CLOSE DEVICE';
+    closeButton.id = 'k-' + id + '-close';
+    //closeButton.setAttribute('onclick', 'ipcRenderer.send("closeDevice", '+ id +')');
+    panelDiv.append(closeButton);
+
+    closeButton.addEventListener('click', () => closeDevice('k', id));
+
+    let viewDiv = document.createElement('div');
+    viewDiv.id = "k-" + id + "-view";
+    viewDiv.setAttribute("class", "viewer");
+
+    let consoleDiv = document.createElement('p');
+    consoleDiv.id = "k-" + id + "-console";
+    consoleDiv.innerHTML = "kinect2 " + id + " viewer:";
+    viewDiv.append(consoleDiv);
+
+    document.getElementById('view').append(viewDiv);
+
+    let colorDiv = document.createElement('img');
+    colorDiv.id = "k-" + id + "-view-color";
+    colorDiv.setAttribute("class", "viewer-img");
+    viewDiv.append(colorDiv);
+
+    let depthDiv = document.createElement('img');
+    depthDiv.id = "k-" + id + "-view-depth";
+    depthDiv.setAttribute("class", "viewer-img");
+    viewDiv.append(depthDiv);
+}
+
+function addAzurePanel(id){
+    let panelDiv = document.createElement('div');
+    panelDiv.id = 'azure-' + id;
+    panelDiv.setAttribute('class', 'devicePanel');
+    document.getElementById('connected').append(panelDiv);
+
+    let deviceTitle = document.createElement('h3');
+    deviceTitle.id = 'azure-' + id + '-title';
+    deviceTitle.innerHTML = "Kinect Azure " + id;
+    panelDiv.append(deviceTitle);
+
+    let depthButton = document.createElement("button");
+    depthButton.setAttribute("class", "mdl-button mdl-js-button mdl-button--raised");
+    depthButton.innerHTML = 'start depth camera';
+    depthButton.id = 'azure-' + id + '-depth';
+    panelDiv.append(depthButton);
+
+    depthButton.addEventListener('click', () => ipcRenderer.send('startDepth', 'azure', id));
+
+    let colorButton = document.createElement("button");
+    colorButton.setAttribute("class", "mdl-button mdl-js-button mdl-button--raised");
+    colorButton.innerHTML = 'start color camera';
+    colorButton.id = 'azure-' + id + '-color';
+    panelDiv.append(colorButton);
+
+    colorButton.addEventListener('click', () => ipcRenderer.send('startColor', 'azure', id));
+
+    let closeButton = document.createElement("button");
+    closeButton.setAttribute("class", "mdl-button mdl-js-button mdl-button--raised");
+    closeButton.innerHTML = 'CLOSE DEVICE';
+    closeButton.id = 'azure-' + id + '-close';
+    //closeButton.setAttribute('onclick', 'ipcRenderer.send("closeDevice", '+ id +')');
+    panelDiv.append(closeButton);
+
+    closeButton.addEventListener('click', () => closeDevice('azure', id));
+
+    let viewDiv = document.createElement('div');
+    viewDiv.id = "azure-" + id + "-view";
+    viewDiv.setAttribute("class", "viewer");
+
+    let consoleDiv = document.createElement('p');
+    consoleDiv.id = "azure-" + id + "-console";
+    consoleDiv.innerHTML = "azure " + id + " viewer:";
+    viewDiv.append(consoleDiv);
+
+    document.getElementById('view').append(viewDiv);
+
+    let colorDiv = document.createElement('img');
+    colorDiv.id = "azure-" + id + "-view-color";
+    colorDiv.setAttribute("class", "viewer-img");
+    viewDiv.append(colorDiv);
+
+    let depthDiv = document.createElement('img');
+    depthDiv.id = "azure-" + id + "-view-depth";
     depthDiv.setAttribute("class", "viewer-img");
     viewDiv.append(depthDiv);
 }

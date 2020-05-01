@@ -60,12 +60,12 @@ class RealSense extends Device {
         if (resultSet) {
            if(this.depthFeed && resultSet.depthFrame){
                let depthFrame = this.colorizer.colorize(resultSet.depthFrame);
-               this.onDepthFrame({data: depthFrame.data, width: depthFrame.width, height: depthFrame.height});
+               this.onDepthFrame({data: depthFrame.data, width: depthFrame.width, height: depthFrame.height, channel: 3});
            }
 
            if(this.colorFeed && resultSet.colorFrame){
                let colorFrame = resultSet.colorFrame;
-               this.onColorFrame({data: colorFrame.data, width: colorFrame.width, height: colorFrame.height});
+               this.onColorFrame({data: colorFrame.data, width: colorFrame.width, height: colorFrame.height, channel: 3});
            }
         }
     }
