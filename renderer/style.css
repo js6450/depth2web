@@ -7,7 +7,7 @@ body{
     height: 100%;
 }
 
-h1, h2, h3{
+h1, h2, h3, h4{
     font-family: 'Montserrat', sans-serif;
 }
 
@@ -24,6 +24,11 @@ h2{
 h3{
     font-size: 20px;
     margin: 0;
+}
+
+h4{
+    font-size: 16px;
+    margin: 8px 0px;
 }
 
 .mdl-button{
@@ -55,8 +60,25 @@ h3{
 .devicePanel{
     background-color: rgba(200, 200, 200, 0.7);
     padding: 12px;
-    margin-top: 32px;
+    margin-top: 12px;
     border-radius: 12px;
+}
+
+.close-btn{
+    display: inline;
+    float: right;
+    margin-right: 0;
+    background: rgba(255, 0, 0, 0.5);
+    color: white;
+    font-weight: bold;
+}
+
+.device-title{
+    display: inline;
+}
+
+#connected-title{
+    margin: 18px 0px;
 }
 
 #broadcast-addr{

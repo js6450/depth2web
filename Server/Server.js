@@ -19,10 +19,10 @@ class Server {
     // sendImage(data){
     //     this.io.sockets.emit('image', data);
     // }
-
-    stop(){
-       // socket.close();
-    }
+    //
+    // stop(){
+    //    this.server.close();
+    // }
 
 }
 

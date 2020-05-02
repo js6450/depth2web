@@ -29,7 +29,7 @@ function createWindow(){
 
     mainWindow.focus();
     //dev tools
-    mainWindow.webContents.openDevTools();
+   // mainWindow.webContents.openDevTools();
 
     ipcMain.on('startDevice', (evt, type, id) =>{
         console.log('type', type, 'device id', id);
@@ -50,8 +50,6 @@ function createWindow(){
                 // console.log("sending image from " + d.type);
                 evt.sender.send('image', {device: d.type, id, img, frameType});
             };
-
-
         });
 
         evt.sender.send('startedDevice', type, id);
@@ -75,8 +73,20 @@ function createWindow(){
         devices[id].getDepth();
     });
 
+    ipcMain.on('stopDepth', (evt, type, id) =>{
+        devices[id].depthFeed = false;
+    });
+
     ipcMain.on('startColor', (evt, type, id) =>{
         devices[id].getColor();
+    });
+
+    ipcMain.on('stopColor', (evt, type, id) =>{
+        devices[id].colorFeed = false;
+    });
+
+    ipcMain.on("setSize", (evt, type, id, w, h) => {
+        devices[id].setSize(w, h)
     });
 
     ipcMain.on('close', (evt) => {
@@ -84,7 +94,6 @@ function createWindow(){
 
         devices.forEach(d => {
             d.stop();
-
         });
 
         evt.sender.send('closed');
@@ -92,12 +101,12 @@ function createWindow(){
         devices = [];
     });
 
-    ipcMain.on('closeServer', (evt) => {
-        currentServer.stop();
-        evt.sender.send('closedServer');
-
-        console.log('server closed');
-    });
+    // ipcMain.on('closeServer', (evt) => {
+    //     currentServer.stop();
+    //     evt.sender.send('closedServer');
+    //
+    //     console.log('server closed');
+    // });
 
     ipcMain.on('closeDevice', (evt, id) => {
         devices[id].stop();
@@ -122,11 +131,10 @@ app.on('activate', function(){
 });
 
 app.on('window-all-closed', function(){
-    console.log('window all closed currentServer', currentServer);
-    if (currentServer) {
-        currentServer.stop();
-        currentServer = null;
-    }
+    // if (currentServer) {
+    //     currentServer.stop();
+    //     currentServer = null;
+    // }
 
     console.log('quit renderer');
 });

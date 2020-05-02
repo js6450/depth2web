@@ -2,18 +2,19 @@ import Peer from "./peerjs"
 
 class Depth2Web{
 
-    constructor(addr){
-
+    constructor(addr, port = 8000){
         this.imgWidth = 320;
         this.imgHeight = 240;
 
         this.devices = [];
+        this.device_elems = [];
+        this.show_elems = false;
 
-        this.depthBlob = [];
-        this.colorBlob = [];
+        this.depthElems = [];
+        this.colorElems = [];
 
-        this.depthURL = [];
-        this.colorURL = [];
+        this.depthData = [];
+        this.colorData = [];
 
         this.peer_net = {host: "localhost", port: 8000, path: "/"};
         this.peer_id = "depth2web";
@@ -27,7 +28,6 @@ class Depth2Web{
 
         this.peer.on("open", function(id){
             console.log("open connection with peer id: ", id);
-
             this.connect();
         }.bind(this));
 
@@ -48,72 +48,139 @@ class Depth2Web{
 
         this.connection.on("data", function(sent){
 
-            if(sent.event == "depth"){
-                this.depthBlob[sent.id] = new Blob([sent.data], {type: 'image/webp'});
-                this.depthURL[sent.id] = URL.createObjectURL(this.depthBlob[sent.id]);
+            if(sent.event === "close-all"){
+                this.devices = [];
+
+                for(i = 0; i < this.device_elems.length; i++){
+                    let toErase = this.device_elems[i];
+                    toErase.parentNode.removeChild(toErase);
+                }
+
+                this.device_elems = [];
+
+                this.depthElems = [];
+                this.colorElems = [];
+
+                this.depthData = [];
+                this.colorData = [];
             }
 
-            if(sent.event == "color"){
-                this.colorBlob[sent.id] = new Blob([sent.data], {type: 'image/webp'});
-                this.colorURL[sent.id] = URL.createObjectURL(this.colorBlob[sent.id]);
+            let devicename = sent.device + "-" + sent.id;
+
+            let device_index = this.devices.indexOf(devicename);
+
+            if(sent.event === "device-closed"){
+
+                console.log(devicename + " closed");
+
+                this.devices.splice(device_index);
+                let toErase = this.device_elems[device_index];
+
+                for(let i = 0; i < this.colorElems; i++){
+                    if(this.colorElems[i][0] === devicename){
+                        this.colorElems.splice(i, 1);
+                    }
+                }
+
+                for(let i = 0; i < this.depthElems; i++){
+                    if(this.depthElems[i][0] === devicename){
+                        this.depthElems.splice(i, 1);
+                    }
+                }
+
+                toErase.parentNode.removeChild(toErase);
+                this.device_elems.splice(device_index);
+            }else{
+                if(device_index < 0){
+                    this.devices.push(devicename);
+
+                    let div = document.createElement('div');
+                    div.id = devicename;
+                    div.style.display = "none";
+                    let depth_img_elem = document.createElement('img');
+                    depth_img_elem.id = devicename + "-depth";
+                    let color_img_elem = document.createElement('img');
+                    color_img_elem.id = devicename + "-color";
+
+                    div.append(color_img_elem);
+                    div.append(depth_img_elem);
+                    document.body.append(div);
+
+                    this.device_elems.push(div);
+                }else{
+
+                    if(this.show_elems){
+                        for(let i = 0; i < this.device_elems.length; i++){
+                            if(this.device_elems[i].style.display === "none"){
+                                this.device_elems[i].style.display = "block";
+                            }
+                        }
+                    }
+
+                    if(sent.event === "depth"){
+                        if(sent.data === "stop"){
+                            console.log("remove");
+                            this.device_elems[device_index].children[1].removeAttribute("src");
+                        }else{
+                            let newBlob = new Blob([sent.data], {type: 'image/webp'});
+                            let newURL = URL.createObjectURL(newBlob);
+
+                            this.depthData[device_index] = new Uint8Array(sent.data);
+                            this.device_elems[device_index].children[1].src = newURL;
+
+                            this.depthElems[device_index] = [devicename, newURL];
+                        }
+                    }
+
+                    if(sent.event === "color"){
+                        if(sent.data === "stop"){
+                            console.log("remove");
+                            this.device_elems[device_index].children[0].removeAttribute("src");
+                        }else{
+                            let newBlob = new Blob([sent.data], {type: 'image/webp'});
+                            let newURL = URL.createObjectURL(newBlob);
+
+                            this.colorData[device_index] = new Uint8Array(sent.data);
+                            this.device_elems[device_index].children[0].src = newURL;
+
+                            if(sent.device === "azure"){
+                                this.device_elems[device_index].children[0].filter = "hue-rotate(150deg)"
+                            }
+
+                            this.colorElems[device_index] = [devicename, newURL];
+                        }
+                    }
+                }
             }
         }.bind(this));
     }
 
     deviceCount(){
-
+        return this.devices.length;
     }
 
     depthCount(){
-        return this.depthURL.length;
+        return this.depthElems.length;
     }
 
     colorCount(){
-        return this.colorURL.length;
+        return this.colorElems.length;
     }
 
-    getDepthBlob(){
-        if(this.depthBlob){
-            return this.depthBlob;
-        }else{
-            console.log("depth blob is not received");
-        }
+    getDepth(i){
+        return this.depthElems[i][1];
     }
 
-    getDepthURL(){
-        if(this.depthURL){
-            return this.depthURL;
-        }else{
-            console.log("depth url is not received");
-        }
+    getDepthData(i){
+        return this.depthData[i];
     }
 
-    displayDepthImage(){
-        if(document.getElementById('depthImg') == null && this.depthURL != null){
-            document.body.append(this.depthImg);
-        }
+    getColor(i){
+        return this.colorElems[i][1];
     }
 
-    getColorBlob(){
-        if(this.colorBlob){
-            return this.colorBlob;
-        }else{
-            return "color blob is not received";
-        }
-    }
-
-    getColorURL(){
-        if(this.colorURL){
-            return this.colorURL;
-        }else{
-            return "color url is not received";
-        }
-    }
-
-    displayColorImage(){
-        if(document.getElementById('colorImg') == null && this.colorURL != null){
-            document.body.append(this.colorImg);
-        }
+    getColorData(i){
+        return this.colorData[i];
     }
 
 }

@@ -7,6 +7,9 @@ module.exports = class Device {
         this.init();
         this.onImage = () => {};
         this.onError = () => {};
+
+        this.w = 320;
+        this.h = 240
     }
 
     init() {
@@ -17,7 +20,12 @@ module.exports = class Device {
         //initalize device
         this.timer = setInterval(() => {
             this.sendFrame();
-        }, 1000);
+        }, 100);
+    }
+
+    setSize(_w, _h){
+        this.w = _w;
+        this.h = _h;
     }
 
     stop() {
@@ -27,7 +35,7 @@ module.exports = class Device {
 
     onColorFrame({data, width, height, channel}){
         sharp(Buffer.from(data), {raw: {width, height, channels: channel}})
-            .resize(320, 240)
+            .resize(this.w, this.h)
             //.resize(640, 480)
             .flop()
             .webp()
@@ -40,10 +48,9 @@ module.exports = class Device {
     }
 
     onDepthFrame({data, width, height, channel}){
-
        // console.log('render');
         sharp(Buffer.from(data), {raw: {width, height, channels: channel}})
-            .resize(320, 240)
+            .resize(this.w, this.h)
             //.resize(640, 480)
             .flop()
             .webp()

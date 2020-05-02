@@ -14,14 +14,16 @@
 <body>
     <div id="control">
         <div id="server">
-            <h2 id="server-msg">BROADCASTING FROM: <span id="broadcast-addr"></span></h2>
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" id="addr">
-                <label class="mdl-textfield__label" for="addr">Enter localhost port number</label>
+            <h2 id="server-msg">BROADCASTING FROM:<br><br><span id="broadcast-addr"></span></h2>
+            <div id="server-options" >
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="addr">
+                    <label class="mdl-textfield__label" for="addr">Enter localhost port number</label>
+                </div>
+                <button class="mdl-button mdl-js-button mdl-button--raised" id="startServer">
+                    START SERVER
+                </button>
             </div>
-            <button class="mdl-button mdl-js-button mdl-button--raised" id="startServer">
-                START SERVER
-            </button>
         </div>
         <hr>
         <div id="devices">
@@ -35,11 +37,16 @@
             <button class="mdl-button mdl-js-button mdl-button--raised" id="realSense">
                 REAL SENSE
             </button>
-            <button class="mdl-button mdl-js-button mdl-button--raised" id="stopAll">
-                STOP ALL
-            </button>
         </div>
-        <div id="connected"></div>
+        <hr>
+        <div id="connected">
+            <div id="connected-title">
+                <h2 style="display: inline; line-height: 36px">DEVICE CONNECTIONS:</h2>
+                <button class="mdl-button mdl-js-button mdl-button--raised close-btn" id="stopAll">
+                    STOP ALL
+                </button>
+            </div>
+        </div>
         <div id="devices-config"></div>
     </div>
     <div id="view">

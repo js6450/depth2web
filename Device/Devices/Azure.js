@@ -1,7 +1,7 @@
 'use strict';
 
 const Device = require('../Device');
-let KinectAzure = require('kinect-azure');
+let KinectAzure;
 
 let COLORWIDTH = 1280;
 let COLORHEIGHT = 720;
@@ -11,6 +11,11 @@ let DEPTHHEIGHT = 576;
 let busy = false;
 class Azure extends Device{
     init(){
+
+        if(process.platform !== "darwin"){
+            KinectAzure = require('kinect-azure');
+        }
+
         this.kinect = new KinectAzure();
         this.depthFeed = false;
         this.colorFeed = false;
@@ -87,21 +92,22 @@ class Azure extends Device{
         if(!this.colorFeed){
             this.colorFeed = true;
         }
-        //
-        // let imagesize = COLORWIDTH * COLORHEIGHT * 4;
-        // let imageDataArray = [];
-        //
-        // for (let i = 0; i < imagesize; i += 4) {
-        //     imageDataArray[i] = this.colorpix[i];
-        //     imageDataArray[i + 1] = this.colorpix[i + 1];
-        //     imageDataArray[i + 2] = this.colorpix[i + 2];
-        //     imageDataArray[i + 3] = 0xff;
-        // }
-        //
-        // console.log("imagedata: " + imageDataArray.length);
-        //
-        // return imageDataArray
     }
+    //
+    // processColor(data){
+    //
+    //     let imagesize = COLORWIDTH * COLORHEIGHT * 4;
+    //     let imageDataArray = [];
+    //
+    //     for (let i = 0; i < imagesize; i += 4) {
+    //         imageDataArray[i] = data[i + 2];
+    //         imageDataArray[i + 1] = data[i + 1];
+    //         imageDataArray[i + 2] = data[i];
+    //         imageDataArray[i + 3] = 0xff;
+    //     }
+    //
+    //     return imageDataArray
+    // }
 
     stop(){
         this.kinect.stopCameras();

@@ -2,13 +2,14 @@
   "name": "Depth2Web",
   "version": "1.0.0",
   "description": "Open source toolkit for depth cameras for web.",
-  "main": "/app/app.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
     "install": "electron-rebuild",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "package-win": "electron-packager ./ depth2web --arch=x64 --platform=win32 --out=release-builds --overwrite",
+    "package-mac": "electron-packager ./ depth2web --arch=x64 --platform=darwin --out=release-builds --overwrite",
+    "build": "parcel build client/depth2web-client.js"
   },
   "author": "Jiwon Shin",
   "license": "MIT",
@@ -45,6 +46,7 @@
     "electron": "^4.2.11",
     "electron-builder": "^20.41.0",
     "electron-packager": "^13.0.0",
-    "electron-rebuild": "^1.8.2"
+    "electron-rebuild": "^1.8.2",
+    "parcel-bundler": "^1.12.4"
   }
 }

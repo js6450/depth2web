@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>depth2web client: Basic Example</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.8.0/p5.min.js"></script>
+    <script src="../dist/depth2web-client.js"></script>
+</head>
+<style>
+    body{
+        margin: 0;
+    }
+</style>
+<body>
+</body>
+<script>
+    let d2w;
+    let hues = [];
+
+    function setup(){
+        createCanvas(windowWidth, windowHeight);
+        noStroke();
+        imageMode(CENTER);
+
+        d2w = new Depth2Web("192.168.1.53", 7777);
+
+        imageMode(CORNER);
+        colorMode(HSB, 360, 100, 100, 100);
+
+        for(let i = 0; i < d2w.depthCount(); i++){
+            hues.push(int(random(360)));
+        }
+    }
+
+    function draw(){
+        background(0, 0, 0, 10);
+        for(let i = 0; i < d2w.depthElems.length; i++){
+
+            if(hues[i] === undefined){
+                hues.push(int(random(360)));
+            }
+
+            loadImage(d2w.getDepth(i), img => {
+                img.loadPixels();
+                for(let y = 0; y < d2w.imgHeight; y += 3){
+                    for(let x = 0; x < d2w.imgWidth; x += 3){
+                        let index = (x + y * d2w.imgWidth) * 4;
+
+                        let mappedX = map(x, 0, d2w.imgWidth, width / d2w.depthCount() * i, width / d2w.depthCount() * (i + 1));
+                        let imgHeight =  (width / d2w.depthCount()) / 320 * 240;
+                        let mappedY = map(y, 0, d2w.imgHeight, (height - imgHeight) / 2, imgHeight + (height - imgHeight) / 2);
+
+                        let average = (img.pixels[index] + img.pixels[index + 1] + img.pixels[index + 3]) / 3;
+                        let percentage = average / 255 * 100;
+                        let size = map(percentage, 90, 100, 5, 15);
+                        let b =  map(percentage, 90, 100, 30, 100);
+
+                        if(percentage > 90){
+                            fill(hues[i], 100, int(percentage));
+                            ellipse(mappedX, mappedY, size, size);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+</script>
+</html>

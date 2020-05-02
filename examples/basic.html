@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>depth2web client: Basic Example</title>
+    <script src="../dist/depth2web-client.js"></script>
+</head>
+<style>
+    body{
+        margin: 0;
+    }
+</style>
+<body>
+</body>
+<script>
+    let d2w;
+
+    window.onload = function(){
+        d2w = new Depth2Web("192.168.1.53", 7777);
+        d2w.show_elems = true;
+    }
+</script>
+</html>

@@ -60,7 +60,11 @@ class RealSense extends Device {
         if (resultSet) {
            if(this.depthFeed && resultSet.depthFrame){
                let depthFrame = this.colorizer.colorize(resultSet.depthFrame);
-               this.onDepthFrame({data: depthFrame.data, width: depthFrame.width, height: depthFrame.height, channel: 3});
+               let processedDepth = this.processDepth(depthFrame.data, depthFrame.width, depthFrame.height);
+               this.onDepthFrame({data: processedDepth, width: depthFrame.width, height: depthFrame.height, channel: 3});
+
+               // let depthFrame = this.colorizer.colorize(resultSet.depthFrame);
+               // this.onDepthFrame({data: depthFrame.data, width: depthFrame.width, height: depthFrame.height, channel: 3});
            }
 
            if(this.colorFeed && resultSet.colorFrame){
@@ -81,6 +85,51 @@ class RealSense extends Device {
       //  this.depthFeed = false;
         console.log('start color cam');
     }
+
+    processDepth(frameData, w, h){
+        let processed = [];
+        for(let i = 0; i < w * h * 3; i += 3){
+            let color = this.RGBtoHSV(frameData[i], frameData[i + 1], frameData[i + 2]);
+            // console.log(color);
+            let mapped = this.map(color.h, 0, 240 / 360, 0, 255);
+            processed[i] = mapped;
+            processed[i + 1] = mapped;
+            processed[i + 2] = mapped;
+        }
+
+        return processed;
+    }
+
+    RGBtoHSV(r, g, b) {
+        if (arguments.length === 1) {
+            g = r.g, b = r.b, r = r.r;
+        }
+        var max = Math.max(r, g, b), min = Math.min(r, g, b),
+            d = max - min,
+            h,
+            s = (max === 0 ? 0 : d / max),
+            v = max / 255;
+
+        switch (max) {
+            case min: h = 0; break;
+            case r: h = (g - b) + d * (g < b ? 6: 0); h /= 6 * d; break;
+            case g: h = (b - r) + d * 2; h /= 6 * d; break;
+            case b: h = (r - g) + d * 4; h /= 6 * d; break;
+        }
+
+        return {
+            h: h,
+            s: s,
+            v: v
+        };
+    }
+
+    map (value, inputMin, inputMax, outputMin, outputMax){
+        return (
+            ((value - inputMin) * (outputMax - outputMin)) / (inputMax - inputMin) +
+            outputMin
+        );
+    };
 
     stop() {
         console.log('device closed');

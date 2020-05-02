@@ -7,3 +7,4 @@ cublas64_100.dll
 cudart64_100.dll
 vcomp140.dll
 cudnn64_7.dll
+release-builds/

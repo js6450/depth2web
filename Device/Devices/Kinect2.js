@@ -1,7 +1,7 @@
 'use strict';
 
 const Device = require('../Device');
-let kinect2 = require('kinect2');
+let kinect2;
 
 let DEPTHWIDTH = 512;
 let DEPTHHEIGHT = 424;
@@ -10,6 +10,11 @@ let COLORHEIGHT = 1080;
 
 class Kinect2 extends Device{
     init(){
+
+        if(process.platform !== "darwin"){
+            kinect2 = require('kinect2');
+        }
+
         this.kinect = new kinect2();
 
         this.depthFeed = false;
@@ -74,7 +79,6 @@ class Kinect2 extends Device{
         }
 
         return imageDataArray;
-
     }
 
     getColor(){
