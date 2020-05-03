@@ -132,6 +132,10 @@ app.on('activate', function(){
 
 app.on('window-all-closed', function(){
 
+    for(let i = 0; i < devices.length; i++){
+        devices[i].stop();
+    }
+
     app.removeAllListeners();
     app.quit();
 
