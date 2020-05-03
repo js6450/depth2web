@@ -15,6 +15,12 @@ Include:
 <script src="https://cdn.jsdelivr.net/gh/js6450/depth2web/dist/depth2web-client.js"></script>
 ```
 
+## Examples
+
+* [Basic Example](https://github.com/js6450/depth2web/blob/master/examples/basic.html): Receiving feeds as ```<img>``` elements
+* [Basic p5.js Example](https://editor.p5js.org/js6450/sketches/XqwcU-BBT)
+* [p5.js Depth Ranging Example](https://editor.p5js.org/js6450/sketches/bMs20e8aM)
+
 ## Contribution Guide
 
 Depth2Web welcomes contribution to the tool kit in any form, including but not limited to, documentation, use case examples and code. Issues and pull requests are welcome!
