@@ -20,8 +20,6 @@
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "http": "0.0.0",
-    "kinect-azure": "0.0.7",
-    "kinect2": "^0.1.7",
     "node-gyp": "^6.1.0",
     "node-librealsense": "^0.2130.0",
     "nvm": "0.0.4",
