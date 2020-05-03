@@ -2,6 +2,8 @@
 
 Depth2Web is an open source tool kit that connects multiple depth camera for the web. It is built as an Electron desktop application, and aims at being **device agnostic**, meaning that there will be less emphasis given to the individual body tracking tools themselves, and focuses on being the aggregating hub of various body tracking tools to provide uniform data for web-based use.
 
+![screenshot of d2w application](assets/app.png)
+
 ## Devices supported
 
 * Microsoft Kinect Azure
