@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>depth2web client: Basic Example</title>
+    <title>depth2web client: Basic Example in p5</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.8.0/p5.min.js"></script>
     <script src="../dist/depth2web-client.js"></script>
 </head>
 <style>
@@ -15,7 +16,9 @@
 <script>
     let d2w;
 
-    window.onload = function(){
+    function setup() {
+        noCanvas();
+
         d2w = new Depth2Web("localhost");
         d2w.show_elems = true;
     }

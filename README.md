@@ -8,6 +8,13 @@ Depth2Web is an open source tool kit that connects multiple depth camera for the
 * Microsoft Kinect V2
 * Intel RealSense 2
 
+## Client-side Library
+
+Include:
+```$xslt
+<script src="https://cdn.jsdelivr.net/gh/js6450/depth2web/dist/depth2web-client.js"></script>
+```
+
 ## Contribution Guide
 
 Depth2Web welcomes contribution to the tool kit in any form, including but not limited to, documentation, use case examples and code. Issues and pull requests are welcome!

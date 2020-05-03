@@ -62,7 +62,7 @@ class RealSense extends Device {
                let depthFrame = this.colorizer.colorize(resultSet.depthFrame);
                let processedDepth = this.processDepth(depthFrame.data, depthFrame.width, depthFrame.height);
                this.onDepthFrame({data: processedDepth, width: depthFrame.width, height: depthFrame.height, channel: 3});
-
+               //
                // let depthFrame = this.colorizer.colorize(resultSet.depthFrame);
                // this.onDepthFrame({data: depthFrame.data, width: depthFrame.width, height: depthFrame.height, channel: 3});
            }

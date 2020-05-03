@@ -144,7 +144,7 @@ class Depth2Web{
                             this.device_elems[device_index].children[0].src = newURL;
 
                             if(sent.device === "azure"){
-                                this.device_elems[device_index].children[0].filter = "hue-rotate(150deg)"
+                                this.device_elems[device_index].children[0].filter = "hue-rotate(150deg)<script src=\"https://cdn.jsdelivr.net/gh/js6450/depth2web/dist/depth2web-client.js\"></script>"
                             }
 
                             this.colorElems[device_index] = [devicename, newURL];

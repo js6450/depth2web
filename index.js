@@ -131,10 +131,9 @@ app.on('activate', function(){
 });
 
 app.on('window-all-closed', function(){
-    // if (currentServer) {
-    //     currentServer.stop();
-    //     currentServer = null;
-    // }
+
+    app.removeAllListeners();
+    app.quit();
 
     console.log('quit renderer');
 });
