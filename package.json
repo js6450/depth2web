@@ -28,7 +28,7 @@
     "nvm": "0.0.4",
     "peer": "^0.5.2",
     "sharp": "^0.25.2",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.4.0"
   },
   "build": {
     "appId": "Depth2Web",
