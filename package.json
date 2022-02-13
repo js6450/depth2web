@@ -14,7 +14,7 @@
   "author": "Jiwon Shin",
   "license": "MIT",
   "dependencies": {
-    "ajv": "^6.12.2",
+    "ajv": "^6.12.3",
     "asar": "^0.14.6",
     "body-parser": "^1.18.3",
     "ejs": "^2.6.1",
