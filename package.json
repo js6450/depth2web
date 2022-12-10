@@ -16,9 +16,9 @@
   "dependencies": {
     "ajv": "^6.12.2",
     "asar": "^0.14.6",
-    "body-parser": "^1.18.3",
+    "body-parser": "^1.20.1",
     "ejs": "^2.6.1",
-    "express": "^4.16.4",
+    "express": "^4.18.2",
     "http": "0.0.0",
     //comment out kinect-azure and kinect2 to build for mac
     "kinect-azure": "0.0.7",
